@@ -1,35 +1,92 @@
-import { View, Text } from "react-native";
+import { Keyboard, TouchableOpacity, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 
-import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Bubble, Send } from "react-native-gifted-chat";
+import { IP } from "../services/IP";
 
-import { ChatService } from "../services/ChatService";
+import axios from "axios";
+
+import RobotImage from "../assets/robot.png";
 
 export default function Chat() {
-  const [messages, setMessages] = useState([
-    {
-      _id: 1,
-      text: "Test",
-      createdAt: new Date(),
-      user: {
-        _id: 1,
-        avatar:
-          "https://play-lh.googleusercontent.com/cF_oWC9Io_I9smEBhjhUHkOO6vX5wMbZJgFpGny4MkMMtz25iIJEh2wASdbbEN7jseAx",
-      },
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const clearChat = () => {
+    setMessages([]);
+  };
 
   const handleMessage = async (message) => {
-    console.log(ChatService(message));
+    setLoading(true);
+    Keyboard.dismiss();
+
     setMessages((prev) => GiftedChat.append(prev, message));
+    await axios
+      .post(`http://${IP}:5000/createChat`, { prompt: message[0].text })
+      .then((response) => {
+        setMessages((prev) =>
+          GiftedChat.append(prev, {
+            _id: Math.round(Math.random() * 100000),
+            createdAt: new Date(),
+            text: response.data,
+            user: {
+              _id: 1,
+              avatar: RobotImage,
+            },
+          })
+        );
+      });
+
+    setLoading(false);
   };
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={(message) => handleMessage(message)}
-      user={{ _id: 2 }}
-      bottomOffset={75}
-    />
+    <>
+      {messages.length > 0 ? (
+        <TouchableOpacity style={styles.clearBtn} onPress={() => clearChat()}>
+          <Text style={styles.clearBtnText}>Clear chat</Text>
+        </TouchableOpacity>
+      ) : null}
+      <GiftedChat
+        messages={messages}
+        onSend={(message) => handleMessage(message)}
+        user={{ _id: 2 }}
+        bottomOffset={75}
+        disableComposer={loading}
+        placeholder={loading ? "Generating response..." : undefined}
+        renderBubble={(props) => (
+          <Bubble
+            {...props}
+            wrapperStyle={{
+              right: { backgroundColor: "#65f2d5" },
+              left: { backgroundColor: "white" },
+            }}
+            textStyle={{ right: { color: "black" } }}
+          />
+        )}
+        timeTextStyle={{ right: { color: "black" } }}
+        renderSend={(props) => (
+          <Send {...props} textStyle={{ color: "#65f2d5" }} />
+        )}
+      />
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  clearBtn: {
+    position: "absolute",
+    alignSelf: "center",
+    backgroundColor: "#65f2d5",
+    marginTop: 15,
+    borderRadius: 10,
+    paddingVertical: 12.5,
+    width: "95%",
+    borderWidth: 1,
+    borderColor: "white",
+    zIndex: 10,
+  },
+  clearBtnText: {
+    textAlign: "center",
+  },
+});

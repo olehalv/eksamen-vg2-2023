@@ -29,16 +29,10 @@ app.post("/createImage", async (req, res) => {
 });
 
 app.post("/createChat", async (req, res) => {
-  if (req.body.prompt && req.body.name) {
+  if (req.body.prompt) {
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: `The user's name is ${req.body.name}. Use it often.`,
-        },
-        { role: "user", content: req.body.prompt },
-      ],
+      messages: [{ role: "user", content: req.body.prompt }],
     });
     res.send(response.data.choices[0].message.content);
   }
