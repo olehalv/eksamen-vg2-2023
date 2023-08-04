@@ -4,7 +4,7 @@ En app som bruker OpenAI sine API tjenester for å lage AI-genererte bilder, og 
 
 Appen er laget med følgene programmeringsspråk, rammever og biblioteker.
 
-<br/><b>Frontend</b>
+<b>Frontend</b>
 <ul>
   <li>1</li>
 </ul>
