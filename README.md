@@ -1,10 +1,10 @@
 # eksamen-2023
 
-En native app som bruker OpenAI sine API tjenester for å lage AI-genererte bilder, og et chat system som lager AI-genererte svar basert på brukerens input.
+En React Native app som bruker OpenAI sitt API for å lage AI-genererte bilder, samt et chat system som lager AI-genererte svar basert på brukerens input.
 
 Appen er hovedsakelig laget med følgene programmeringsspråk, rammever og biblioteker:
 
-<b>Klient-siden:</b>
+<b>Client:</b>
 <ul>
   <li>React Native</li>
   <li>Expo</li>
@@ -13,7 +13,7 @@ Appen er hovedsakelig laget med følgene programmeringsspråk, rammever og bibli
   <li>React Native Gifted Chat</li>
 </ul>
 
-<b>Server-siden:</b>
+<b>Serverside:</b>
 <ul>
   <li>Node.js</li>
   <li>Express.js</li>
